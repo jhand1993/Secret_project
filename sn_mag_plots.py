@@ -83,11 +83,12 @@ def plot(obslist1, obslist2, synlist1, synlist2, name1, name2):
     # histogram and bins
     count = xmin
     interval = 0.5
-    obsavg_list = []
-    synavg_list = []
+    obsdiff_list = []
+    syndiff_list = []
     obsbinned_list = []
     synbinned_list = []
 
+    # create bins of y-offset data per interval
     while count < xmax:
         obsbin = []
         synbin = []
@@ -95,13 +96,13 @@ def plot(obslist1, obslist2, synlist1, synlist2, name1, name2):
             if count <= ps1g_ps1i[k] < count + interval:
                 y = obslist1_obslist2[k]
                 y0 = obs_linfit[0] * ps1g_ps1i[k] + obs_linfit[1]
-                obsavg_list.append(y-y0)
+                obsdiff_list.append(y-y0)
                 obsbin.append(obslist1_obslist2[k])
         for l in range(len(syn_ps1g_ps1i)):
             if count <= syn_ps1g_ps1i[l] < count + interval:
                 z = synlist1_synlist2[l]
                 z0 = syn_linfit[0] * syn_ps1g_ps1i[l] + syn_linfit[1]
-                synavg_list.append(z-z0)
+                syndiff_list.append(z-z0)
                 synbin.append(synlist1_synlist2[l])
 
         obsbinned_list.append(obsbin)
@@ -109,18 +110,18 @@ def plot(obslist1, obslist2, synlist1, synlist2, name1, name2):
         obsbin = []
         synbin = []
         count += interval
-    # print(obsbinned_list, synbinned_list)
-    print(obsavg_list)
-    print(synavg_list)
     # bins = len(np.arange(-np.max(obslist1_obslist2), np.max(obslist1_obslist2), 0.01))
-    plt.hist(obsavg_list, 50, normed=True, histtype='step')
-    plt.hist(synavg_list, 50, normed=True, color='green', histtype='step')
+
+    # create histogram of all differences
+    # plt.hist(obsdiff_list, 40, histtype='step')
+    plt.hist(syndiff_list, 40, color='green', histtype='step')
+    plt.xlabel('%s-%s (mag)' % (name1, name2))
     plt.show()
     return [obsbinned_list, synbinned_list]
 
 plot(ps1g, sdssg, syn_ps1g, syn_sdssg, 'ps1g', 'sdssg')
 plot(ps1i, sdssi, syn_ps1i, syn_sdssi, 'ps1i', 'sdssi')
-# plot(ps1r, sdssr, syn_ps1r, syn_sdssr, 'ps1r', 'sdssr')
-# plot(ps1z, sdssz, syn_ps1z, syn_sdssz, 'ps1z', 'sdssz')
+plot(ps1r, sdssr, syn_ps1r, syn_sdssr, 'ps1r', 'sdssr')
+plot(ps1z, sdssz, syn_ps1z, syn_sdssz, 'ps1z', 'sdssz')
 
 
